@@ -15,5 +15,6 @@ func _ready():
 	randomize()
 	z_index = 1
 
-func update():
+func update_score(points):
+	score += points
 	$score_label.text = "Score: " + str(score)
