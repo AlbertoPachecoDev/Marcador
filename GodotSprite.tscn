@@ -13,3 +13,7 @@ script = ExtResource( 1 )
 
 [node name="bounce" type="AudioStreamPlayer" parent="godot"]
 stream = ExtResource( 3 )
+
+[node name="efectox" type="Tween" parent="godot"]
+
+[node name="efectoy" type="Tween" parent="godot"]
