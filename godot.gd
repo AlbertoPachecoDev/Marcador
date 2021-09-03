@@ -2,10 +2,8 @@ extends Sprite
 
 var vel
 var spin
-onready var escala = get_scale()
 onready var screensize = get_viewport_rect().size
 onready var width = texture.get_width() / 2
-
 
 func _ready():
 	$efectox.interpolate_property(self, 'scale:x',
@@ -35,4 +33,3 @@ func _process(delta):
 
 #func _on_efecto_tween_completed(object, key):
 #	add new tween + interpolate
-

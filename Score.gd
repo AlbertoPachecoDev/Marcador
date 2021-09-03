@@ -4,7 +4,6 @@ extends Node2D
 
 var screenH
 var screenW
-
 var level = 1
 var score = 0
 

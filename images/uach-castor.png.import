@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon1024.png-17dfe7aa05c27eabe01c422e1990b5b2.stex"
+path="res://.import/uach-castor.png-66e5f4c540e294c86fbc176f9eb574de.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://icon1024.png"
-dest_files=[ "res://.import/icon1024.png-17dfe7aa05c27eabe01c422e1990b5b2.stex" ]
+source_file="res://images/uach-castor.png"
+dest_files=[ "res://.import/uach-castor.png-66e5f4c540e294c86fbc176f9eb574de.stex" ]
 
 [params]
 

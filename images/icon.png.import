@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/uach.png-bbe9aec359735bbe363b4d7df370b87c.stex"
+path="res://.import/icon.png-b9450fb2459f5b277908511db3d050dd.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://uach.png"
-dest_files=[ "res://.import/uach.png-bbe9aec359735bbe363b4d7df370b87c.stex" ]
+source_file="res://images/icon.png"
+dest_files=[ "res://.import/icon.png-b9450fb2459f5b277908511db3d050dd.stex" ]
 
 [params]
 
