@@ -6,6 +6,8 @@ var screenH
 var screenW
 var level = 1
 var score = 0
+var left = 0
+var gamer = 0
 
 const Digits = [
 	 preload("res://images/0.png"),
@@ -20,16 +22,29 @@ const Digits = [
 	 preload("res://images/9.png"),
 ]
 
+const Points = [0, 20, 40, 60, 70, 80, 85, 90, 95, 100]
+
 func _ready():
 	var scr = get_viewport_rect().size
 	screenW = scr.x
 	screenH = scr.y
 	randomize()
+	gamer = 5
 	z_index = 1
-#	for fn in DigitFiles:
-#		var pack = load(fn)
-#		Digits.append(pack)
 		
-func update_score(points):
-	score += points
+func update_score(id):
+	if id == gamer: score_replay()
+	left += 1
+	if 9==left: score_replay()
+		
+func score_replay():
+	var points = Points[left]
+	if 0==score: score=points 
+	score = round((score + points) / 2.0)
 	$score_label.text = "Score: " + str(score)
+	$end.play()
+
+func _on_end_finished():
+	left = 0
+	# warning-ignore:return_value_discarded
+	get_tree().change_scene("res://Main.tscn")

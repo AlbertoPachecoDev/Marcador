@@ -13,11 +13,11 @@ onready var height = int(texture.get_height() * get_scale().y / 2)
 
 func _ready():
 	$efectox.interpolate_property(self, 'scale:x',
-		null, 0.1, 2, Tween.TRANS_QUAD, Tween.EASE_OUT)
+		null, 0.15, 2, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	$efectoy.interpolate_property(self, 'scale:y',
-		null, 0.1, 2, Tween.TRANS_QUAD, Tween.EASE_OUT)
+		null, 0.15, 2, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	$efecto_final.interpolate_property(self, 'modulate:a',
-		null, 0, 0.4, Tween.TRANS_QUAD, Tween.EASE_OUT)
+		null, 0, 0.5, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	vel = Vector2(rand_range(150,240),rand_range(25,150)).rotated(rand_range(0.4, PI/2))
 	spin = rand_range(-PI, PI)
 	set_position(Vector2(rand_range(150,screensize.x-150), 100))
@@ -45,5 +45,8 @@ func _process(delta):
 
 func _on_efecto_final_tween_completed(_object, _key):
 	if bouncex and bouncey:
+		$out.play()
 		Score.update_score(id)
-		queue_free()
+
+func _on_out_finished():
+	queue_free()
