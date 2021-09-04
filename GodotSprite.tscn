@@ -17,3 +17,7 @@ stream = ExtResource( 3 )
 [node name="efectox" type="Tween" parent="godot"]
 
 [node name="efectoy" type="Tween" parent="godot"]
+
+[node name="efecto_final" type="Tween" parent="godot"]
+
+[connection signal="tween_completed" from="godot/efecto_final" to="godot" method="_on_efecto_final_tween_completed"]
