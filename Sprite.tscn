@@ -20,6 +20,10 @@ stream = ExtResource( 4 )
 volume_db = -8.0
 pitch_scale = 0.8
 
+[node name="gamble" type="Tween" parent="."]
+repeat = true
+playback/repeat = true
+
 [node name="efectox" type="Tween" parent="."]
 
 [node name="efectoy" type="Tween" parent="."]
