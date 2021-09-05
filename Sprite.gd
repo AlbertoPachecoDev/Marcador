@@ -15,6 +15,8 @@ onready var height = int(texture.get_height() * get_scale().y / 2)
 func _ready():
 	# warning-ignore:return_value_discarded
 	Score.connect("digit_key", self, "choosen")
+	# warning-ignore:return_value_discarded
+	Score.connect("pause", self, "pause")
 	$gamble.interpolate_property(self, 'modulate:a',
 		null, 0.5, 0.5, Tween.TRANS_BACK, Tween.EASE_IN_OUT)
 	$efectox.interpolate_property(self, 'scale:x',
@@ -23,11 +25,9 @@ func _ready():
 		null, 0.12, 2, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	$efecto_final.interpolate_property(self, 'modulate:a',
 		null, 0, 0.5, Tween.TRANS_QUAD, Tween.EASE_OUT)
-	vel = Vector2(rand_range(150,240),rand_range(25,150)).rotated(rand_range(0.4, PI/2))
 	spin = rand_range(-PI, PI)
 	set_position(Vector2(rand_range(150,screensize.x-150), 100))
-	# set_process(false)
-	# yield(get_tree().create_timer(0.5), "timeout") # pause 1/2 sec
+	vel = Score.get_vel() #Vector2(rand_range(150,240),rand_range(25,150)).rotated(rand_range(0.4, PI/2))
 	set_process(true)
 
 func _process(delta):
@@ -62,3 +62,6 @@ func _on_efecto_final_tween_completed(_object, _key):
 
 func _on_out_finished():
 	queue_free()
+
+func pause(mode):
+	set_visible(not mode)

@@ -1,11 +1,13 @@
 # FONT: https://fonts.google.com/specimen/Indie+Flower
-
 extends Node2D
 
 signal digit_key(digit)
+signal pause(mode)
 
-const    NEG = -10
-const  Ratio = [0, 20, 40, 60, 70, 80, 85, 90, 95, 100]
+const NEG = -10
+const Ratio = [0, 20, 40, 60, 70, 80, 85, 90, 95, 100]
+const VX = [[50,80], [90,120], [130,150], [150,180], [190,220]]
+const VY = [[30,60], [55,90], [80,120], [110,150], [150,190]]
 const Digits = [
 	 preload("res://images/0.png"),
 	 preload("res://images/1.png"),
@@ -39,15 +41,32 @@ func _ready():
 func _input(event):
 	if Input.is_action_pressed("ui_cancel"):
 		get_tree().quit()
-		return
-	if event is InputEventKey:
-		if event.is_pressed():
+	elif Input.is_action_pressed("pause"): 
+		# Proy/Mapa-Entrada/pause=SPACE
+		# Property/PauseMode/Process
+		var pause = not get_tree().paused
+		get_tree().paused = pause
+		$refresh.paused = pause 
+		$start.paused = pause
+		emit_signal("pause", pause)
+	elif event is InputEventKey:
+		if not get_tree().paused and event.is_pressed():
 			var key = event.scancode - KEY_0
 			if key in range(0,10):
 				get_tree().get_root().set_disable_input(true)
 				gamer = key
 				emit_signal("digit_key", key)
 				start()
+
+func get_vel():
+	var factor = 2.0
+	var mx = VX.size() 
+	var n = round(level / factor)
+	var f = 1.0
+	if n >= mx:
+		n = mx - 1
+		f = (level + 1.0) / (factor * mx)
+	return f * Vector2(rand_range(VX[n][0],VX[n][1]),rand_range(VY[n][0],VY[n][1])).rotated(rand_range(0.4, PI/2))
 
 func start():
 	$end.stop()
@@ -61,11 +80,11 @@ func update_score(id):
 		score_replay()
 
 func reset():
+	penalty = NEG
 	level += 1
 	left = 0
 	nwait = 0
 	gamer = null
-	penalty = NEG
 	$wait1.stop()
 	$wait2.stop()
 	$start.start()
@@ -82,9 +101,9 @@ func score_and_reset(ratio, tie=false):
 	print_score()
 		
 func score_replay():
-	var points = Ratio[left]
-	if 0==score: score=points
-	score_and_reset(points)
+	var pts = Ratio[left]
+	if 0==score: score = pts
+	score_and_reset(pts)
 
 func _on_end_finished():
 	reset()
@@ -95,13 +114,14 @@ func _on_wait1_timeout():
 	$wait2.start()
 
 func _on_wait2_timeout():
-	nwait += 1
+	var p = penalty / 10 # higher penalty if digit was late
+	nwait += 1 # wait longer if more digits & less score
 	match left:
-		9: score_and_reset(100)
-		8: if nwait>1: score_and_reset(95, true)
-		7: if nwait>2: score_and_reset(90, true)
-		6: if nwait>3: score_and_reset(80, true)
-		_: if nwait>4: score_and_reset(70, true)
+		9: score_and_reset(100+p)
+		8: if nwait>1: score_and_reset(95+p, true)
+		7: if nwait>2: score_and_reset(90+p, true)
+		6: if nwait>3: score_and_reset(80+p, true)
+		_: if nwait>4: score_and_reset(70+p, true)
 
 func _on_start_timeout():
 	$end.play()
@@ -110,6 +130,6 @@ func _on_refresh_timeout():
 	if gamer:
 		points += 20
 	else:
-		points += penalty
+		points  += penalty
 		penalty += NEG
 	print_score()
