@@ -19,10 +19,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="end" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 3 )
-volume_db = 1.0
-
 [node name="refresh" type="Timer" parent="."]
 wait_time = 0.25
 autostart = true
@@ -38,8 +34,12 @@ one_shot = true
 [node name="wait2" type="Timer" parent="."]
 wait_time = 3.5
 
-[connection signal="finished" from="end" to="." method="_on_end_finished"]
+[node name="end" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+volume_db = 1.0
+
 [connection signal="timeout" from="refresh" to="." method="_on_refresh_timeout"]
 [connection signal="timeout" from="start" to="." method="_on_start_timeout"]
 [connection signal="timeout" from="wait1" to="." method="_on_wait1_timeout"]
 [connection signal="timeout" from="wait2" to="." method="_on_wait2_timeout"]
+[connection signal="finished" from="end" to="." method="_on_end_finished"]

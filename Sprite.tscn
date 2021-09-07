@@ -10,27 +10,25 @@ scale = Vector2( 0.2, 0.2 )
 texture = ExtResource( 1 )
 script = ExtResource( 2 )
 
+[node name="efectox" type="Tween" parent="."]
+
+[node name="efectoy" type="Tween" parent="."]
+
+[node name="gamble" type="Tween" parent="."]
+repeat = true
+playback/repeat = true
+
+[node name="efecto_final" type="Tween" parent="."]
+
 [node name="bounce" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
-volume_db = -8.0
-pitch_scale = 0.8
+volume_db = -10.0
+pitch_scale = 0.5
 
 [node name="out" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 4 )
 volume_db = -8.0
 pitch_scale = 0.8
 
-[node name="gamble" type="Tween" parent="."]
-repeat = true
-playback/repeat = true
-
-[node name="efectox" type="Tween" parent="."]
-
-[node name="efectoy" type="Tween" parent="."]
-
-[node name="efecto_final" type="Tween" parent="."]
-
-[node name="Sprite" type="Node2D" parent="."]
-
-[connection signal="finished" from="out" to="." method="_on_out_finished"]
 [connection signal="tween_completed" from="efecto_final" to="." method="_on_efecto_final_tween_completed"]
+[connection signal="finished" from="out" to="." method="_on_out_finished"]
