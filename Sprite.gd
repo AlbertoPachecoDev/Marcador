@@ -17,14 +17,12 @@ func _ready():
 	Score.connect("digit_key", self, "choosen")
 	# warning-ignore:return_value_discarded
 	Score.connect("pause", self, "pause")
-	$efectox.interpolate_property(self, 'scale:x',
-		null, 0.14, 2, Tween.TRANS_QUAD, Tween.EASE_OUT)
-	$efectoy.interpolate_property(self, 'scale:y',
-		null, 0.12, 2, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	$gamble.interpolate_property(self, 'modulate:a',
-		null, 0.5, 0.5, Tween.TRANS_BACK, Tween.EASE_IN_OUT)
+		null, 0.6, 1.0, Tween.TRANS_BACK, Tween.EASE_IN_OUT)
+	$efecto_scale.interpolate_property(self, 'scale',
+		null, Score.SCALE*0.75, 0.25, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	$efecto_final.interpolate_property(self, 'modulate:a',
-		null, 0, 0.5, Tween.TRANS_QUAD, Tween.EASE_OUT)
+		null, 0, 0.3, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	spin = rand_range(-PI, PI)
 	set_position(Vector2(rand_range(250,screensize.x-250), rand_range(150,screensize.y-150)))
 	vel = Score.get_vel()
@@ -35,19 +33,20 @@ func _process(delta):
 	var pos = get_position()
 	pos += vel * delta
 	if pos.x+width >= screensize.x or pos.x-width <= 0:
-		vel.x *= -1
-		$efectox.start()
-		if not $bounce.playing: $bounce.play()
-		if not bouncex:
-			bouncex = true
-			if bouncey: $efecto_final.start()	
+		if not bouncex: bouncex = true
+		if bouncey:
+			$efecto_final.start()
+		else: # last-bounce-issue#7
+			if not $bounce.playing: $bounce.play()
+			vel.x *= -1 
 	if pos.y+height >= screensize.y or pos.y-height <= 0:
-		vel.y *= -1
-		$efectoy.start()
-		if not $bounce.playing: $bounce.play()
-		if not bouncey:
-			bouncey = true
-			if bouncex: $efecto_final.start()
+		if not bouncey: bouncey = true
+		if bouncex:
+			$efecto_final.start()
+		else: # last-bounce-issue#7
+			$efecto_scale.start()
+			if not $bounce.playing: $bounce.play()
+			vel.y *= -1 
 	set_position(pos)
 
 func choosen(digit): # user-signal
@@ -56,10 +55,10 @@ func choosen(digit): # user-signal
 
 func _on_efecto_final_tween_completed(_object, _key):
 	if selected: $gamble.stop_all()
+	Score.update_score(id) # score stop issue#1
 	$out.play()
 
 func _on_out_finished():
-	Score.update_score(id)
 	queue_free()
 
 func pause(mode):

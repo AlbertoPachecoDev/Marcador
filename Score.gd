@@ -4,6 +4,7 @@ extends Node2D
 signal digit_key(digit)
 signal pause(mode)
 
+const SCALE = Vector2(0.3, 0.3)
 const NEG = -10
 const Ratio = [0, 20, 40, 60, 70, 80, 85, 90, 95, 100]
 const VX = [[50,80], [90,120], [130,150], [150,180], [190,220]]
@@ -29,6 +30,7 @@ var gamer = null
 var nwait = 0
 var penalty = NEG
 var points = 0
+var stop = false # stop issue#1
 
 func _ready():
 	var scr = get_viewport_rect().size
@@ -49,14 +51,15 @@ func _input(event):
 		$refresh.paused = pause 
 		$start.paused = pause
 		emit_signal("pause", pause)
-	elif event is InputEventKey:
-		if not get_tree().paused and event.is_pressed():
-			var key = event.scancode - KEY_0
-			if key in range(0,10):
-				get_tree().get_root().set_disable_input(true)
-				gamer = key
-				emit_signal("digit_key", key)
-				start()
+	elif gamer == null: # no digit key activated? issue#6
+		if event is InputEventKey:
+			if not get_tree().paused and event.is_pressed():
+				var key = event.scancode
+				key = key - (KEY_0 if key < 16777350 else 16777350) # num-keypad issue#5
+				if key in range(0,10):
+					gamer = key
+					emit_signal("digit_key", key)
+					start()
 
 func get_vel():
 	var factor = 2.0
@@ -84,20 +87,23 @@ func reset():
 	level += 1
 	left = 0
 	nwait = 0
+	stop = false # stop issue#1
 	gamer = null
 	$wait1.stop()
 	$wait2.stop()
 	$start.start()
-	get_tree().get_root().set_disable_input(false)
+	$refresh.start()
 	Engine.time_scale = 0.4 # slow down
 
 func print_score():
-	$score_label.text = "Level: "+str(level)+" Wins: "+str(score)+" Points: "+str(points)
+	var waits = "" if not nwait else (" Tie"+str(10-left)+" (w"+str(nwait)+")")
+	$score_label.text = "Level: "+str(level)+" Wins: "+str(score)+" Points: "+str(points)+waits
 
 func score_and_reset(ratio, tie=false):
 	score = round((score + ratio) / 2.0)
 	$end.pitch_scale = 1.5 if tie else 1.0 # empate
 	$end.play()
+	stop = true # stop issue#1
 	print_score()
 		
 func score_replay():
@@ -124,12 +130,14 @@ func _on_wait2_timeout():
 		_: if nwait>4: score_and_reset(70+p, true)
 
 func _on_start_timeout():
+	stop = true # stop issue#1
 	$end.play()
 
 func _on_refresh_timeout():
-	if gamer:
-		points += 20
-	else:
-		points  += penalty
-		penalty += NEG
+	if not stop: # stop issue#1
+		if gamer != null: # zero-digit issue#2 (0=false)
+			points += 20
+		else:
+			points  += penalty
+			penalty += NEG
 	print_score()
