@@ -23,7 +23,7 @@ const Digits = [
 ]
 var screenH
 var screenW
-var level = 0
+var level = 1 #isse#8
 var score = 0
 var left = 0
 var gamer = null
@@ -84,7 +84,7 @@ func update_score(id):
 
 func reset():
 	penalty = NEG
-	level += 1
+	if gamer!=null: level += 1 # issue#8 not chosen, not add
 	left = 0
 	nwait = 0
 	stop = false # stop issue#1
