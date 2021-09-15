@@ -63,3 +63,6 @@ func _on_out_finished():
 
 func pause(mode):
 	set_visible(not mode)
+	
+func set_vel(v):
+	vel = v

@@ -31,6 +31,8 @@ var nwait = 0
 var penalty = NEG
 var points = 0
 var stop = false # stop issue#1
+var sprites = []
+var posMouse = []
 
 func _ready():
 	var scr = get_viewport_rect().size
@@ -60,6 +62,15 @@ func _input(event):
 					gamer = key
 					emit_signal("digit_key", key)
 					start()
+	#elif event is InputEventMouseButton:
+	#	print("Mouse Click/Unclick at: ", event.position)
+	elif event is InputEventMouseMotion:
+		posMouse.append(event.position)
+		if posMouse.size() > 15:
+			print(gamer, "-", sprites.size())
+			if gamer!=null: sprites[gamer].set_vel((Vector2(posMouse[-1] - posMouse[0]))/2)
+			posMouse = []
+			
 
 func get_vel():
 	var factor = 2.0
